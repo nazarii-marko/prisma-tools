@@ -1,7 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { DMMF } from '@prisma/client/runtime';
-// @ts-ignore
-import graphqlFields from 'graphql-fields';
+const graphqlFields = require('graphql-fields');
 
 /**
  * Convert `info` to select object accepted by `prisma client`.
@@ -46,6 +45,7 @@ export class PrismaSelect {
   private allowedProps = ['_count'];
   private isAggregate: boolean = false;
 
+  // eslint-disable-next-line no-useless-constructor
   constructor(
     private info: GraphQLResolveInfo,
     private options?: {
@@ -238,7 +238,10 @@ export class PrismaSelect {
                 field.type,
                 selectObject.select[key],
               );
-              if (Object.keys(subModelFilter.select).length > 0) {
+              if (
+                typeof subModelFilter !== 'object' ||
+                Object.keys(subModelFilter.select).length > 0
+              ) {
                 filteredObject.select[key] = subModelFilter;
               }
             }
